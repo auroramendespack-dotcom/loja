@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Login</title>
+  <style>
+    :root {
+      --primary: #8A2BE2;
+      --secondary: #FF69B4;
+      --dark: #4B0082;
+      --light: #F8F8FF;
+      --accent: #FFD700;
+      --text: #333333;
+      --error: #FF6B6B;
+      --success: #4ECDC4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #8A2BE2 0%, #4B0082 100%);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(to right, var(--accent), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+
+    .subtitle { font-size: 1.1rem; margin-bottom: 30px; opacity: 0.9; text-align: center; }
+
+    .form-group { margin-bottom: 20px; }
+
+    label { display: block; margin-bottom: 8px; font-weight: 600; }
+
+    input {
+      width: 100%;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus { transform: scale(1.02); box-shadow: 0 0 0 3px var(--accent); }
+
+    button {
+      background: linear-gradient(to right, var(--secondary), var(--primary));
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      margin: 20px 0;
+      width: 100%;
+    }
+
+    button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3); }
+    button:active { transform: translateY(1px); }
+
+    .message {
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .error {
+      background-color: rgba(255, 107, 107, 0.2);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+
+    .success {
+      background-color: rgba(78, 205, 196, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .secure-area { display: none; }
+
+    .secure-area h2 { text-align: center; margin-bottom: 20px; color: var(--accent); }
+
+    .user-info {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .logout-btn { background: linear-gradient(to right, #FF6B6B, #FF8E53); width: auto; margin-top: 30px; }
+
+    @media (max-width: 600px) {
+      .container { padding: 15px; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Sistema de Login</h1>
+    <p class="subtitle">Faça login para acessar a área restrita</p>
+
+    <div id="loginForm">
+      <div class="form-group">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" placeholder="Digite seu usuário">
+      </div>
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" placeholder="Digite sua senha">
+      </div>
+      <button onclick="fazerLogin()">Entrar</button>
+      <div id="message" class="message"></div>
+    </div>
+
+    <div id="secureArea" class="secure-area">
+      <h2>Bem-vindo à Área Restrita!</h2>
+      <div class="user-info">
+        <p>Usuário: <span id="userDisplay"></span></p>
+        <p>Login realizado com sucesso em: <span id="loginTime"></span></p>
+      </div>
+      <p>Aqui você pode colocar qualquer conteúdo que deseja proteger com login.</p>
+      <button class="logout-btn" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+
+  <script>
+    const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbyUDhrhfkW8Dojzxnq7lbj9KsdBcrMlytxHWYoT5jKABpiDEPrHwt-9f7Olhpo2xpH8/exec"; // Substitua pela sua URL do Apps Script
+
+    const loginForm = document.getElementById('loginForm');
+    const secureArea = document.getElementById('secureArea');
+    const messageDiv = document.getElementById('message');
+    const userDisplay = document.getElementById('userDisplay');
+    const loginTime = document.getElementById('loginTime');
+
+    function fazerLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        mostrarMensagem('Por favor, preencha todos os campos.', 'error');
+        return;
+      }
+
+      mostrarMensagem('Verificando credenciais...', 'success');
+
+      fetch(LOGIN_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          action: "login",
+          username: username,
+          password: password
+        }).toString()
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          loginSucesso(result.username);
+        } else {
+          mostrarMensagem(result.message, 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        mostrarMensagem('Erro ao fazer login. Tente novamente.', 'error');
+      });
+    }
+
+    function loginSucesso(username) {
+      mostrarMensagem('Login realizado com sucesso!', 'success');
+      loginForm.style.display = 'none';
+      secureArea.style.display = 'block';
+      userDisplay.textContent = username;
+      loginTime.textContent = new Date().toLocaleString();
+      localStorage.setItem('loggedIn', 'true');
+      localStorage.setItem('username', username);
+    }
+
+    function fazerLogout() {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('username');
+      loginForm.style.display = 'block';
+      secureArea.style.display = 'none';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      mostrarMensagem('Logout realizado com sucesso.', 'success');
+      setTimeout(() => {
+        messageDiv.innerHTML = '';
+        messageDiv.className = 'message';
+      }, 2000);
+    }
+
+    function mostrarMensagem(texto, tipo) {
+      messageDiv.textContent = texto;
+      messageDiv.className = `message ${tipo}`;
+    }
+
+    window.onload = function() {
+      const loggedIn = localStorage.getItem('loggedIn');
+      const username = localStorage.getItem('username');
+      if (loggedIn === 'true' && username) {
+        loginSucesso(username);
+      }
+    };
+  </script>
+</body>
+</html>
