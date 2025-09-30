@@ -15,9 +15,9 @@ const users = [
 ];
 
 const packs = [
-  { name: 'Pack1', description: 'Fotos do Pack 1', link: 'https://drive.google.com/...' },
-  { name: 'Pack2', description: 'Fotos do Pack 2', link: 'https://drive.google.com/...' },
-  { name: 'Pack3', description: 'Fotos do Pack 3', link: 'https://drive.google.com/...' }
+  { name: 'Pack1', description: 'Fotos do Pack 1', link: 'https://drive.google.com/drive/folders/17huTiXHGXoSdQFIl-SyY0lKNg_9XC5L2?usp=sharing' },
+  { name: 'Pack2', description: 'Fotos do Pack 2', link: 'https://drive.google.com/drive/folders/1JU1Cm57UTIXIMQHMAtmp8NZumuqDIxR6?usp=sharing' },
+  { name: 'Pack3', description: 'Fotos do Pack 3', link: 'https://drive.google.com/drive/folders/1M2O3s8TY_-KBn7TfcHB3d_VnzUkHxTBR?usp=sharing' }
 ];
 
 // Endpoint de login
@@ -45,3 +45,4 @@ app.post('/getPacks', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
