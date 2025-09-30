@@ -53,12 +53,6 @@
     .error { background-color: rgba(255,107,107,0.2); color: var(--error); border: 1px solid var(--error); }
     .success { background-color: rgba(78,205,196,0.2); color: var(--success); border: 1px solid var(--success); }
 
-    .secure-area { display: none; }
-
-    .secure-area h2 { text-align: center; margin-bottom: 20px; color: var(--accent); }
-    .user-info { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-    .logout-btn { background: linear-gradient(to right, #FF6B6B, #FF8E53); width: auto; margin-top: 30px; }
-
     @media (max-width: 600px) {
       .container { padding: 15px; }
       h1 { font-size: 2rem; }
@@ -82,28 +76,13 @@
       <button onclick="fazerLogin()">Entrar</button>
       <div id="message" class="message"></div>
     </div>
-
-    <div id="secureArea" class="secure-area">
-      <h2>Bem-vindo à Área Restrita!</h2>
-      <div class="user-info">
-        <p>Usuário: <span id="userDisplay"></span></p>
-        <p>Login realizado com sucesso em: <span id="loginTime"></span></p>
-      </div>
-      <p>Aqui você pode colocar qualquer conteúdo que deseja proteger com login.</p>
-      <button class="logout-btn" onclick="fazerLogout()">Sair</button>
-    </div>
   </div>
 
   <script>
-    // ✅ URL do backend no Render
+    // URL do backend no Render
     const LOGIN_API_URL = "https://loja2-7g3n.onrender.com/login";
 
-
-    const loginForm = document.getElementById('loginForm');
-    const secureArea = document.getElementById('secureArea');
     const messageDiv = document.getElementById('message');
-    const userDisplay = document.getElementById('userDisplay');
-    const loginTime = document.getElementById('loginTime');
 
     function fazerLogin() {
       const username = document.getElementById('username').value.trim();
@@ -124,7 +103,10 @@
       .then(response => response.json())
       .then(result => {
         if (result.success) {
-          loginSucesso(result.username);
+          // Salva login no localStorage e redireciona
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('username', result.username);
+          window.location.href = 'packs.html';
         } else {
           mostrarMensagem(result.message, 'error');
         }
@@ -135,43 +117,10 @@
       });
     }
 
-    function loginSucesso(username) {
-      mostrarMensagem('Login realizado com sucesso!', 'success');
-      loginForm.style.display = 'none';
-      secureArea.style.display = 'block';
-      userDisplay.textContent = username;
-      loginTime.textContent = new Date().toLocaleString();
-      localStorage.setItem('loggedIn', 'true');
-      localStorage.setItem('username', username);
-    }
-
-    function fazerLogout() {
-      localStorage.removeItem('loggedIn');
-      localStorage.removeItem('username');
-      loginForm.style.display = 'block';
-      secureArea.style.display = 'none';
-      document.getElementById('username').value = '';
-      document.getElementById('password').value = '';
-      mostrarMensagem('Logout realizado com sucesso.', 'success');
-      setTimeout(() => {
-        messageDiv.innerHTML = '';
-        messageDiv.className = 'message';
-      }, 2000);
-    }
-
     function mostrarMensagem(texto, tipo) {
       messageDiv.textContent = texto;
       messageDiv.className = `message ${tipo}`;
     }
-
-    window.onload = function() {
-      const loggedIn = localStorage.getItem('loggedIn');
-      const username = localStorage.getItem('username');
-      if (loggedIn === 'true' && username) {
-        loginSucesso(username);
-      }
-    };
   </script>
 </body>
 </html>
-
