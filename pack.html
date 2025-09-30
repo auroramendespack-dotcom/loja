@@ -31,26 +31,37 @@
     <div id="packsList"></div>
 
     <script>
-        // Verifica se o usuário está logado
-        const username = localStorage.getItem('username');
-        const packs = localStorage.getItem('packs');
-        
-        if (!username) {
-            // Se não estiver logado, redireciona para a página de login
-            window.location.href = 'index.html';
-        } else {
-            // Exibe os packs
+      const username = localStorage.getItem('username');
+    
+      if (!username) {
+        window.location.href = 'index.html';
+      } else {
+        fetch('https://loja2-7g3n.onrender.com/getPacks', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
             const packsList = document.getElementById('packsList');
-            // Supondo que packs seja uma string separada por vírgulas
-            const packsArray = packs.split(',');
-            
-            packsArray.forEach(pack => {
-                const packElement = document.createElement('div');
-                packElement.className = 'pack';
-                packElement.innerHTML = `<h3>${pack.trim()}</h3><p>Descrição do pack ${pack.trim()}</p>`;
-                packsList.appendChild(packElement);
+            data.packs.forEach(pack => {
+              const div = document.createElement('div');
+              div.className = 'pack';
+              div.innerHTML = `
+                <h3>${pack.name}</h3>
+                <p>${pack.description}</p>
+                <a href="${pack.link}" target="_blank">Acessar pack</a>
+              `;
+              packsList.appendChild(div);
             });
-        }
+          } else {
+            alert(data.message);
+            window.location.href = 'index.html';
+          }
+        });
+      }
     </script>
 </body>
+
 </html>
