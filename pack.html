@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packs de Fotos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .pack {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .pack h3 {
+            margin: 0 0 10px 0;
+        }
+        .pack p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Packs de Fotos Disponíveis</h1>
+    <div id="packsList"></div>
+
+    <script>
+        // Verifica se o usuário está logado
+        const username = localStorage.getItem('username');
+        const packs = localStorage.getItem('packs');
+        
+        if (!username) {
+            // Se não estiver logado, redireciona para a página de login
+            window.location.href = 'index.html';
+        } else {
+            // Exibe os packs
+            const packsList = document.getElementById('packsList');
+            // Supondo que packs seja uma string separada por vírgulas
+            const packsArray = packs.split(',');
+            
+            packsArray.forEach(pack => {
+                const packElement = document.createElement('div');
+                packElement.className = 'pack';
+                packElement.innerHTML = `<h3>${pack.trim()}</h3><p>Descrição do pack ${pack.trim()}</p>`;
+                packsList.appendChild(packElement);
+            });
+        }
+    </script>
+</body>
+</html>
