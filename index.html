@@ -29,25 +29,9 @@
       padding: 20px;
     }
 
-    .container {
-      max-width: 500px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
+    .container { max-width: 500px; width: 100%; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      background: linear-gradient(to right, var(--accent), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-align: center;
-    }
+    h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); background: linear-gradient(to right, var(--accent), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
 
     .subtitle { font-size: 1.1rem; margin-bottom: 30px; opacity: 0.9; text-align: center; }
 
@@ -55,69 +39,24 @@
 
     label { display: block; margin-bottom: 8px; font-weight: 600; }
 
-    input {
-      width: 100%;
-      padding: 15px 20px;
-      border: none;
-      border-radius: 50px;
-      font-size: 16px;
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      outline: none;
-    }
+    input { width: 100%; padding: 15px 20px; border: none; border-radius: 50px; font-size: 16px; background: rgba(255,255,255,0.9); box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.3s ease; outline: none; }
 
     input:focus { transform: scale(1.02); box-shadow: 0 0 0 3px var(--accent); }
 
-    button {
-      background: linear-gradient(to right, var(--secondary), var(--primary));
-      color: white;
-      border: none;
-      padding: 15px 40px;
-      font-size: 18px;
-      font-weight: 600;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      margin: 20px 0;
-      width: 100%;
-    }
+    button { background: linear-gradient(to right, var(--secondary), var(--primary)); color: white; border: none; padding: 15px 40px; font-size: 18px; font-weight: 600; border-radius: 50px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease; margin: 20px 0; width: 100%; }
 
-    button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3); }
+    button:hover { transform: translateY(-3px); box-shadow: 0 7px 20px rgba(0,0,0,0.3); }
     button:active { transform: translateY(1px); }
 
-    .message {
-      padding: 15px;
-      border-radius: 10px;
-      margin: 15px 0;
-      text-align: center;
-      font-weight: 600;
-    }
+    .message { padding: 15px; border-radius: 10px; margin: 15px 0; text-align: center; font-weight: 600; }
 
-    .error {
-      background-color: rgba(255, 107, 107, 0.2);
-      color: var(--error);
-      border: 1px solid var(--error);
-    }
-
-    .success {
-      background-color: rgba(78, 205, 196, 0.2);
-      color: var(--success);
-      border: 1px solid var(--success);
-    }
+    .error { background-color: rgba(255,107,107,0.2); color: var(--error); border: 1px solid var(--error); }
+    .success { background-color: rgba(78,205,196,0.2); color: var(--success); border: 1px solid var(--success); }
 
     .secure-area { display: none; }
 
     .secure-area h2 { text-align: center; margin-bottom: 20px; color: var(--accent); }
-
-    .user-info {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-
+    .user-info { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
     .logout-btn { background: linear-gradient(to right, #FF6B6B, #FF8E53); width: auto; margin-top: 30px; }
 
     @media (max-width: 600px) {
@@ -156,7 +95,8 @@
   </div>
 
   <script>
-    const LOGIN_API_URL = "https://script.google.com/macros/s/AKfycbyUDhrhfkW8Dojzxnq7lbj9KsdBcrMlytxHWYoT5jKABpiDEPrHwt-9f7Olhpo2xpH8/exec"; // Substitua pela sua URL do Apps Script
+    // ✅ URL do backend no Render
+    const LOGIN_API_URL = "https://seu-app-no-render.onrender.com/login";
 
     const loginForm = document.getElementById('loginForm');
     const secureArea = document.getElementById('secureArea');
@@ -177,12 +117,8 @@
 
       fetch(LOGIN_API_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          action: "login",
-          username: username,
-          password: password
-        }).toString()
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
       })
       .then(response => response.json())
       .then(result => {
